@@ -79,17 +79,34 @@ Section Ex1.
   
   (* We define total computable functions to be
      reducible partial computable functions. *)
-  Record tcfunction : Type :=
-    tcfuncI {
-        tcfunc :> pcfunction;
-        tcreducible : reducible tcfunc
+  Record tcfunction' : Type :=
+    tcfuncI' {
+        tcfunc' :> pcfunction;
+        tcreducible' : reducible tcfunc'
       }.
 
+  (* We give an equivalent definition and only use that
+     from here on. *)
+  Record tcfunction : Type :=
+    tcfuncI {
+        tcfunc :> func
+      }.
+
+  Lemma tcf_1 : tcfunction -> tcfunction'.
+  Proof.
+    intros f.
+    pose (f' := fun x y => f x = y).
+    assert (forall x y, f x = f y -> x = y).
+    
+    apply (tcfuncI' f').
+  Lemma tcf_2: tcfunction' -> tcfunction.
+  
   (* We define a coercion from total computable
      functions to normal Coq functions. *)
   Definition tcf (f: tcfunction) : nat -> nat.
     intros x. destruct (tcreducible f x). exact x0. Defined.
 
+  
   
   (* We define the type of turing machines to
      be the natural numbers, i.e. we only deal
